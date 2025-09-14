@@ -1,0 +1,42 @@
+# Node modules
+node_modules/
+
+# Compiled output
+out/
+*.vsix
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# VSCode settings (optional - you might want to keep .vscode/launch.json)
+.vscode/settings.json
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# API keys and sensitive config (extra safety)
+*.key
+config.local.json
+
+# Build artifacts
+dist/
+build/
