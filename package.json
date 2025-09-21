@@ -1,12 +1,24 @@
 {
   "name": "vajra",
   "displayName": "Vajra - AI Coding Assistant",
-  "description": "Multi-provider AI coding assistant supporting Groq, Ollama and more",
-  "version": "0.0.1",
+  "description": "Enterprise-grade multi-provider AI coding assistant supporting GPT-5, Claude 4, Qwen3-Coder, and more",
+  "version": "0.2.0",
+  "publisher": "ashishjsharda",
   "engines": {
     "vscode": "^1.74.0"
   },
   "categories": ["Other"],
+  "keywords": [
+    "ai",
+    "coding",
+    "assistant",
+    "gpt-5",
+    "claude-4",
+    "qwen",
+    "deepseek",
+    "multimodal",
+    "cursor-alternative"
+  ],
   "activationEvents": [
     "onStartupFinished"
   ],
@@ -27,8 +39,87 @@
         "command": "vajra.explainCode",
         "title": "Explain Selected Code",
         "icon": "$(question)"
+      },
+      {
+        "command": "vajra.generateCode",
+        "title": "Generate Code with AI",
+        "icon": "$(code)"
+      },
+      {
+        "command": "vajra.refactorCode",
+        "title": "Refactor Selected Code",
+        "icon": "$(wrench)"
+      },
+      {
+        "command": "vajra.debugCode",
+        "title": "Debug Code with AI",
+        "icon": "$(bug)"
+      },
+      {
+        "command": "vajra.optimizeCode",
+        "title": "Optimize Code Performance",
+        "icon": "$(rocket)"
+      },
+      {
+        "command": "vajra.addComments",
+        "title": "Add Comments to Code",
+        "icon": "$(note)"
+      },
+      {
+        "command": "vajra.createTests",
+        "title": "Generate Unit Tests",
+        "icon": "$(check)"
+      },
+      {
+        "command": "vajra.showModelStatus",
+        "title": "Show Model Status & Recommendations",
+        "icon": "$(info)"
+      },
+      {
+        "command": "vajra.checkModel",
+        "title": "Check Model Availability",
+        "icon": "$(search)"
+      },
+      {
+        "command": "vajra.getSetupRecommendations",
+        "title": "Get Setup Recommendations",
+        "icon": "$(lightbulb)"
       }
     ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "vajra.explainCode",
+          "when": "editorHasSelection",
+          "group": "vajra@1"
+        },
+        {
+          "command": "vajra.refactorCode",
+          "when": "editorHasSelection",
+          "group": "vajra@2"
+        },
+        {
+          "command": "vajra.debugCode",
+          "when": "editorHasSelection",
+          "group": "vajra@3"
+        },
+        {
+          "command": "vajra.optimizeCode",
+          "when": "editorHasSelection",
+          "group": "vajra@4"
+        },
+        {
+          "command": "vajra.addComments",
+          "when": "editorHasSelection",
+          "group": "vajra@5"
+        },
+        {
+          "command": "vajra.createTests",
+          "when": "editorHasSelection",
+          "group": "vajra@6"
+        }
+      ]
+    },
     "views": {
       "explorer": [
         {
@@ -41,42 +132,118 @@
       ]
     },
     "configuration": {
-      "title": "Vajra",
+      "title": "Vajra AI Coding Assistant",
       "properties": {
-        "vajra.groqApiKey": {
+        "vajra.openaiApiKey": {
           "type": "string",
-          "description": "Groq API Key",
-          "markdownDescription": "Your Groq API key. Get one from [Groq Console](https://console.groq.com/)"
+          "description": "OpenAI API Key for GPT-5 models",
+          "markdownDescription": "Your OpenAI API key. Get one from [OpenAI Platform](https://platform.openai.com/api-keys)"
         },
-        "vajra.ollamaEndpoint": {
+        "vajra.anthropicApiKey": {
           "type": "string",
-          "default": "http://localhost:11434",
-          "description": "Ollama server endpoint"
+          "description": "Anthropic API Key for Claude 4 models",
+          "markdownDescription": "Your Anthropic API key. Get one from [Anthropic Console](https://console.anthropic.com/)"
         },
-        "vajra.huggingfaceApiKey": {
+        "vajra.qwenApiKey": {
           "type": "string",
-          "description": "HuggingFace API Key (optional)"
+          "description": "Qwen API Key for Qwen3-Coder models",
+          "markdownDescription": "Your Qwen API key. Get one from [Alibaba Cloud DashScope](https://dashscope.aliyun.com/)"
+        },
+        "vajra.deepseekApiKey": {
+          "type": "string",
+          "description": "DeepSeek API Key for DeepSeek-Coder models",
+          "markdownDescription": "Your DeepSeek API key. Get one from [DeepSeek Platform](https://platform.deepseek.com/)"
+        },
+        "vajra.mistralApiKey": {
+          "type": "string",
+          "description": "Mistral API Key for Codestral models",
+          "markdownDescription": "Your Mistral API key. Get one from [Mistral Platform](https://console.mistral.ai/)"
         },
         "vajra.geminiApiKey": {
           "type": "string",
           "description": "Google Gemini API Key",
           "markdownDescription": "Your Google AI API key. Get one from [Google AI Studio](https://makersuite.google.com/app/apikey)"
         },
+        "vajra.groqApiKey": {
+          "type": "string",
+          "description": "Groq API Key for fast inference",
+          "markdownDescription": "Your Groq API key. Get one from [Groq Console](https://console.groq.com/)"
+        },
         "vajra.openrouterApiKey": {
           "type": "string",
-          "description": "OpenRouter API Key",
+          "description": "OpenRouter API Key for unified model access",
           "markdownDescription": "Your OpenRouter API key. Get one from [OpenRouter](https://openrouter.ai/keys)"
+        },
+        "vajra.huggingfaceApiKey": {
+          "type": "string",
+          "description": "HuggingFace API Key for open source models",
+          "markdownDescription": "Your HuggingFace API key. Get one from [HuggingFace](https://huggingface.co/settings/tokens)"
+        },
+        "vajra.ollamaEndpoint": {
+          "type": "string",
+          "default": "http://localhost:11434",
+          "description": "Ollama server endpoint for local models"
         },
         "vajra.defaultProvider": {
           "type": "string",
-          "enum": ["groq", "ollama", "deepseek", "gemini", "codellama", "openrouter", "huggingface"],
-          "default": "groq",
-          "description": "Default AI provider"
+          "enum": [
+            "openai",
+            "anthropic", 
+            "qwen",
+            "deepseek",
+            "mistral",
+            "gemini",
+            "groq",
+            "ollama",
+            "openrouter",
+            "huggingface"
+          ],
+          "default": "qwen",
+          "description": "Default AI provider",
+          "enumDescriptions": [
+            "OpenAI GPT-5 (Best overall, premium pricing)",
+            "Anthropic Claude 4 (Best reasoning, large context)",
+            "Qwen3-Coder (Best for coding, autonomous agents)",
+            "DeepSeek-Coder V2.5 (Great coding, best value)",
+            "Mistral Codestral (Fast coding, good performance)",
+            "Google Gemini 2.5 (Multimodal, code execution)",
+            "Groq (Ultra-fast inference)",
+            "Ollama (Local models, privacy)",
+            "OpenRouter (Access to all models)",
+            "HuggingFace (Open source models)"
+          ]
         },
         "vajra.defaultModel": {
           "type": "string",
-          "default": "llama-3.1-8b-instant",
+          "default": "qwen3-coder-32b-instruct",
           "description": "Default model to use"
+        },
+        "vajra.autoModelSelection": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically select the best model for each task"
+        },
+        "vajra.maxTokens": {
+          "type": "number",
+          "default": 4096,
+          "description": "Maximum tokens for model responses"
+        },
+        "vajra.temperature": {
+          "type": "number",
+          "default": 0.7,
+          "minimum": 0,
+          "maximum": 2,
+          "description": "Model temperature (0 = deterministic, 2 = very creative)"
+        },
+        "vajra.enableCostTracking": {
+          "type": "boolean",
+          "default": false,
+          "description": "Track and display API costs"
+        },
+        "vajra.enableMultiModalInput": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable image and voice input capabilities"
         }
       }
     }
@@ -84,14 +251,33 @@
   "scripts": {
     "vscode:prepublish": "npm run compile",
     "compile": "tsc -p ./",
-    "watch": "tsc -watch -p ./"
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js"
   },
   "devDependencies": {
     "@types/vscode": "^1.74.0",
     "@types/node": "16.x",
-    "typescript": "^4.9.4"
+    "@types/mocha": "^10.0.1",
+    "@typescript-eslint/eslint-plugin": "^5.45.0",
+    "@typescript-eslint/parser": "^5.45.0",
+    "eslint": "^8.28.0",
+    "typescript": "^4.9.4",
+    "mocha": "^10.1.0",
+    "@vscode/test-electron": "^2.2.0"
   },
   "dependencies": {
-    "axios": "^1.6.0"
-  }
+    "axios": "^1.6.0",
+    "form-data": "^4.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ashishjsharda/Vajra.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ashishjsharda/Vajra/issues"
+  },
+  "homepage": "https://github.com/ashishjsharda/Vajra#readme",
+  "license": "MIT"
 }

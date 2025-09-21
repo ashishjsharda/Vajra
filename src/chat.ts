@@ -37,6 +37,9 @@ export class ChatProvider implements vscode.WebviewViewProvider {
         case 'selectProvider':
           await this.selectProvider();
           break;
+        case 'checkOllama':
+          await this.checkOllamaStatus();
+          break;
       }
     });
   }
@@ -73,7 +76,13 @@ export class ChatProvider implements vscode.WebviewViewProvider {
         contextualMessage = `Here's my ${language} code:\n\`\`\`${language}\n${selectedText}\n\`\`\`\n\nQuestion: ${message}`;
       }
 
-      const response = await provider.sendMessage(contextualMessage, config.defaultModel);
+      // For Ollama, use smart model detection
+      let modelToUse = config.defaultModel;
+      if (config.defaultProvider === 'ollama') {
+        modelToUse = await this.getSmartOllamaModel(config.defaultModel);
+      }
+
+      const response = await provider.sendMessage(contextualMessage, modelToUse);
 
       const assistantMessage: ChatMessage = {
         id: (Date.now() + 1).toString(),
@@ -81,50 +90,215 @@ export class ChatProvider implements vscode.WebviewViewProvider {
         role: 'assistant',
         timestamp: new Date(),
         provider: provider.name,
-        model: config.defaultModel
+        model: modelToUse
       };
 
       this.messages.push(assistantMessage);
       this.updateWebview();
 
     } catch (error: any) {
-      Utils.showError(error.message);
-      
-      const errorMessage: ChatMessage = {
-        id: (Date.now() + 1).toString(),
-        content: `Error: ${error.message}`,
-        role: 'assistant',
-        timestamp: new Date()
-      };
-
-      this.messages.push(errorMessage);
-      this.updateWebview();
+      await this.handleError(error);
     }
+  }
+
+  /**
+   * Smart model detection for Ollama
+   */
+  private async getSmartOllamaModel(requestedModel: string): Promise<string> {
+    try {
+      const availableModels = await ConfigManager.getAvailableOllamaModels();
+      
+      if (availableModels.length === 0) {
+        throw new Error('No Ollama models installed. Please install a model first.');
+      }
+
+      // Check if requested model exists
+      if (availableModels.includes(requestedModel)) {
+        return requestedModel;
+      }
+
+      // Find best alternative
+      const smartDefault = await ConfigManager.getSmartDefaultModel();
+      
+      // Show user-friendly notification about model switch
+      if (requestedModel !== smartDefault) {
+        vscode.window.showInformationMessage(
+          `Using '${smartDefault}' instead of '${requestedModel}'. To install: ollama pull ${requestedModel}`,
+          'Install Model',
+          'Show Available'
+        ).then(choice => {
+          if (choice === 'Install Model') {
+            const terminal = vscode.window.createTerminal('Ollama');
+            terminal.show();
+            terminal.sendText(`ollama pull ${requestedModel}`);
+          } else if (choice === 'Show Available') {
+            vscode.commands.executeCommand('vajra.showModelStatus');
+          }
+        });
+      }
+
+      return smartDefault;
+      
+    } catch (error) {
+      throw new Error(`Ollama error: ${error.message}`);
+    }
+  }
+
+  /**
+   * Enhanced error handling
+   */
+  private async handleError(error: any) {
+    let errorMessage = error.message;
+    let showActions = false;
+
+    // Ollama-specific error handling
+    if (errorMessage.includes('ECONNREFUSED') || errorMessage.includes('not running')) {
+      errorMessage = 'Ollama server not running. Please start Ollama first.';
+      showActions = true;
+      
+      vscode.window.showErrorMessage(
+        errorMessage,
+        'Download Ollama',
+        'Setup Guide'
+      ).then(choice => {
+        if (choice === 'Download Ollama') {
+          vscode.env.openExternal(vscode.Uri.parse('https://ollama.ai/download'));
+        } else if (choice === 'Setup Guide') {
+          this.showOllamaSetupGuide();
+        }
+      });
+    } 
+    // Model not found errors
+    else if (errorMessage.includes('not found') || errorMessage.includes('does not exist')) {
+      showActions = true;
+      
+      vscode.window.showErrorMessage(
+        errorMessage,
+        'Show Models',
+        'Install Recommended'
+      ).then(choice => {
+        if (choice === 'Show Models') {
+          vscode.commands.executeCommand('vajra.showModelStatus');
+        } else if (choice === 'Install Recommended') {
+          const terminal = vscode.window.createTerminal('Ollama');
+          terminal.show();
+          terminal.sendText('ollama pull qwen2.5-coder:7b');
+        }
+      });
+    }
+
+    // Show error in chat
+    Utils.showError(errorMessage);
+    
+    const errorChatMessage: ChatMessage = {
+      id: (Date.now() + 1).toString(),
+      content: `Error: ${errorMessage}`,
+      role: 'assistant',
+      timestamp: new Date()
+    };
+
+    this.messages.push(errorChatMessage);
+    this.updateWebview();
+  }
+
+  private showOllamaSetupGuide() {
+    const content = `# Ollama Setup Guide
+
+## 1. Download & Install
+Visit: https://ollama.ai/download
+
+## 2. Install Your First Model
+\`\`\`bash
+# Best coding model (recommended)
+ollama pull qwen2.5-coder:7b
+
+# Or use what you already have
+ollama pull llama2:latest
+\`\`\`
+
+## 3. Verify Installation
+\`\`\`bash
+ollama list
+ollama run llama2:latest "Hello, write a Python function"
+\`\`\`
+
+## 4. Configure Vajra
+After installation, Vajra will automatically detect your models.`;
+
+    vscode.workspace.openTextDocument({
+      content,
+      language: 'markdown'
+    }).then(doc => {
+      vscode.window.showTextDocument(doc);
+    });
   }
 
   private async selectProvider() {
     const providers = this.providerManager.getAllProviders();
-    const items = providers.map(p => ({
-      label: p.displayName,
-      description: p.isConfigured() ? '✅ Configured' : '⚠️ Not configured',
-      value: p.name
+    const items = await Promise.all(providers.map(async p => {
+      let description = p.isConfigured() ? '✅ Configured' : '⚠️ Not configured';
+      
+      if (p.name === 'ollama') {
+        try {
+          const models = await ConfigManager.getAvailableOllamaModels();
+          description += ` (${models.length} models)`;
+        } catch (error) {
+          description += ' (offline)';
+        }
+      }
+      
+      return {
+        label: p.displayName,
+        description,
+        value: p.name
+      };
     }));
 
     const selected = await Utils.showQuickPick(items);
     if (selected) {
       const config = vscode.workspace.getConfiguration('vajra');
       await config.update('defaultProvider', (selected as any).value, vscode.ConfigurationTarget.Global);
+      
+      if ((selected as any).value === 'ollama') {
+        const smartModel = await ConfigManager.getSmartDefaultModel();
+        await config.update('defaultModel', smartModel, vscode.ConfigurationTarget.Global);
+      }
+      
       Utils.showInfo(`Switched to ${selected.label}`);
     }
   }
 
-  private async configureProvider(providerName: string) {
-    if (providerName === 'groq') {
-      await ConfigManager.promptForApiKey('groq');
-    } else if (providerName === 'huggingface') {
-      await ConfigManager.promptForApiKey('huggingface');
+  private async checkOllamaStatus() {
+    try {
+      const models = await ConfigManager.getAvailableOllamaModels();
+      if (models.length > 0) {
+        Utils.showInfo(`Ollama connected with ${models.length} models: ${models.join(', ')}`);
+      } else {
+        Utils.showError('Ollama connected but no models installed');
+      }
+    } catch (error) {
+      Utils.showError('Ollama not available. Please check if it\'s running.');
     }
-    // Ollama doesn't need configuration
+  }
+
+  private async configureProvider(providerName: string) {
+    const apiKeyProviders = ['openai', 'anthropic', 'qwen', 'deepseek', 'mistral', 'gemini', 'groq', 'openrouter', 'huggingface'];
+    
+    if (apiKeyProviders.includes(providerName)) {
+      await ConfigManager.promptForApiKey(providerName);
+    } else if (providerName === 'ollama') {
+      const choice = await vscode.window.showInformationMessage(
+        'Ollama requires local installation. Would you like setup help?',
+        'Setup Guide',
+        'Download Ollama'
+      );
+      
+      if (choice === 'Setup Guide') {
+        this.showOllamaSetupGuide();
+      } else if (choice === 'Download Ollama') {
+        vscode.env.openExternal(vscode.Uri.parse('https://ollama.ai/download'));
+      }
+    }
   }
 
   private updateWebview() {
@@ -192,6 +366,9 @@ export class ChatProvider implements vscode.WebviewViewProvider {
             border-radius: 4px;
             cursor: pointer;
         }
+        button:hover {
+            background: var(--vscode-button-hoverBackground);
+        }
         .provider-info { 
             font-size: 0.8em; 
             color: var(--vscode-descriptionForeground); 
@@ -203,6 +380,10 @@ export class ChatProvider implements vscode.WebviewViewProvider {
             border-radius: 4px; 
             overflow-x: auto; 
         }
+        .error-message {
+            color: var(--vscode-errorForeground);
+            background: var(--vscode-inputValidation-errorBackground);
+        }
     </style>
 </head>
 <body>
@@ -212,6 +393,7 @@ export class ChatProvider implements vscode.WebviewViewProvider {
             <input type="text" id="messageInput" placeholder="Ask Vajra anything..." />
             <button onclick="sendMessage()">Send</button>
             <button onclick="selectProvider()">Provider</button>
+            <button onclick="checkOllama()" title="Check Ollama Status">🔍</button>
         </div>
     </div>
 
@@ -229,17 +411,21 @@ export class ChatProvider implements vscode.WebviewViewProvider {
 
         function renderMessages() {
             const container = document.getElementById('chatContainer');
-            container.innerHTML = messages.map(msg => \`
-                <div class="message \${msg.role}">
-                    <div>\${formatMessage(msg.content)}</div>
-                    \${msg.provider ? \`<div class="provider-info">\${msg.provider} • \${msg.model}</div>\` : ''}
-                </div>
-            \`).join('');
+            container.innerHTML = messages.map(msg => {
+                const isError = msg.content.startsWith('Error:');
+                const className = \`message \${msg.role} \${isError ? 'error-message' : ''}\`;
+                
+                return \`
+                    <div class="\${className}">
+                        <div>\${formatMessage(msg.content)}</div>
+                        \${msg.provider ? \`<div class="provider-info">\${msg.provider} • \${msg.model}</div>\` : ''}
+                    </div>
+                \`;
+            }).join('');
             container.scrollTop = container.scrollHeight;
         }
 
         function formatMessage(content) {
-            // Basic code block formatting
             return content
                 .replace(/\`\`\`([\\s\\S]*?)\`\`\`/g, '<pre><code>$1</code></pre>')
                 .replace(/\`([^\`]+)\`/g, '<code>$1</code>')
@@ -259,6 +445,10 @@ export class ChatProvider implements vscode.WebviewViewProvider {
 
         function selectProvider() {
             vscode.postMessage({ type: 'selectProvider' });
+        }
+
+        function checkOllama() {
+            vscode.postMessage({ type: 'checkOllama' });
         }
 
         document.getElementById('messageInput').addEventListener('keypress', (e) => {
