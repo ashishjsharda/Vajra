@@ -23,7 +23,7 @@ export class ConfigManager {
       
       // Default settings
       defaultProvider: config.get('defaultProvider', 'ollama'),
-      defaultModel: config.get('defaultModel', 'llama2:latest'), // Your installed model
+      defaultModel: config.get('defaultModel', 'qwen2.5-coder:7b'),
       
       // Advanced features
       autoModelSelection: config.get('autoModelSelection', true),
@@ -65,9 +65,6 @@ export class ConfigManager {
     return key;
   }
 
-  /**
-   * Auto-detect what models are actually available in Ollama
-   */
   static async getAvailableOllamaModels(): Promise<string[]> {
     try {
       const config = this.getConfig();
@@ -80,18 +77,14 @@ export class ConfigManager {
     }
   }
 
-  /**
-   * Get smart default model based on what's actually installed
-   */
   static async getSmartDefaultModel(): Promise<string> {
     try {
       const availableModels = await this.getAvailableOllamaModels();
       
       if (availableModels.length === 0) {
-        return 'llama2:latest'; // Safe fallback
+        return 'qwen2.5-coder:7b';
       }
 
-      // Priority order for coding tasks
       const codingPriority = [
         'qwen2.5-coder:7b',
         'qwen2.5-coder:1.5b',
@@ -99,51 +92,46 @@ export class ConfigManager {
         'deepseek-coder:6.7b',
         'codellama:7b',
         'codellama:13b',
-        'starcoder2:7b'
+        'starcoder2:7b',
+        'llama3.3:70b',
+        'llama3.2:3b'
       ];
 
-      // Check for coding models first
       for (const preferred of codingPriority) {
         if (availableModels.includes(preferred)) {
           return preferred;
         }
       }
 
-      // Return first available model (like your llama2:latest)
       return availableModels[0];
       
     } catch (error) {
-      return 'llama2:latest';
+      return 'qwen2.5-coder:7b';
     }
   }
 
-  /**
-   * Auto-configure extension on first run
-   */
   static async autoSetup(): Promise<void> {
     const config = vscode.workspace.getConfiguration('vajra');
     
-    // Check if already configured
     const currentProvider = config.get('defaultProvider');
     const currentModel = config.get('defaultModel');
     
-    if (currentProvider !== 'groq' || currentModel !== 'llama-3.1-8b-instant') {
-      return; // Already customized
+    // Skip if user has customized
+    if (currentProvider !== 'ollama' && currentProvider !== 'groq') {
+      return;
     }
 
     try {
-      // Try to detect Ollama
       const availableModels = await this.getAvailableOllamaModels();
       
       if (availableModels.length > 0) {
         const smartModel = await this.getSmartDefaultModel();
         
-        // Auto-configure to use Ollama with detected model
         await config.update('defaultProvider', 'ollama', vscode.ConfigurationTarget.Global);
         await config.update('defaultModel', smartModel, vscode.ConfigurationTarget.Global);
         
         vscode.window.showInformationMessage(
-          `Vajra auto-configured to use Ollama with model: ${smartModel}`,
+          `Vajra configured to use Ollama with ${smartModel}`,
           'Show Models'
         ).then(choice => {
           if (choice === 'Show Models') {
@@ -152,7 +140,7 @@ export class ConfigManager {
         });
       }
     } catch (error) {
-      // Ollama not available, keep default settings
+      // Ollama not available, keep defaults
     }
   }
 }

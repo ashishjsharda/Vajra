@@ -1,419 +1,315 @@
-# Vajra - Enterprise AI Coding Assistant
+# Vajra - AI Coding Assistant
 
-> **The most comprehensive multi-provider AI coding assistant for VSCode**
+<div align="center">
 
-Vajra brings the power of GPT-5, Claude 4, Qwen3-Coder, and 10+ cutting-edge AI models directly into your development workflow. Built as a true Cursor alternative with enterprise-grade features, local model support, and intelligent model routing.
+![Vajra Logo](icon.png)
 
-## 🚀 Key Features
+**Enterprise-grade multi-provider AI coding assistant for VS Code**
 
-### **🧠 Latest AI Models (2025)**
-- **GPT-5 & Codex** - OpenAI's most advanced coding models (74.9% SWE-bench accuracy)
-- **Claude 4 Sonnet/Opus** - 1M token context window for entire codebase understanding  
-- **Qwen3-Coder** - Alibaba's specialized 480B coding model with autonomous agent training
-- **DeepSeek-Coder V2.5** - Best value with 338 programming languages
-- **Mistral Codestral 25.01** - Fastest coding assistant with 86.6% HumanEval
-- **Gemini 2.5 Pro** - Multimodal with code execution and 1M context
+[![Version](https://img.shields.io/badge/version-0.3.0-blue.svg)](https://github.com/ashishjsharda/Vajra)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![VS Code](https://img.shields.io/badge/VS%20Code-1.74.0+-blue.svg)](https://code.visualstudio.com/)
 
-### **⚡ Smart Features**
-- **Intelligent Model Routing** - Automatically selects the best model for each task
-- **Multi-Provider Support** - 10+ providers including local Ollama models
-- **Enterprise Security** - Local model deployment for sensitive codebases
-- **Cost Optimization** - Transparent pricing with usage tracking
-- **Multimodal Input** - Image, voice, and code understanding
+[Features](#features) • [Installation](#installation) • [Usage](#usage) • [Providers](#supported-providers) • [Contributing](#contributing)
 
-### **🎯 Coding Superpowers**
-- **Code Generation** - Natural language to working code
-- **Intelligent Refactoring** - Context-aware code improvements
-- **Bug Detection** - AI-powered debugging assistance  
-- **Performance Optimization** - Automated code optimization
-- **Test Generation** - Comprehensive unit test creation
-- **Documentation** - Auto-generated comments and docs
+</div>
 
-## 🆚 Why Choose Vajra Over Cursor?
+## 🎯 Overview
 
-| Feature | Vajra | Cursor |
-|---------|-------|--------|
-| **Model Selection** | 10+ providers, auto-routing | Limited model options |
-| **Local Models** | Full Ollama support | No local deployment |
-| **Pricing** | Transparent, usage-based | Complex credit system |
-| **Enterprise** | Built-in compliance tools | Limited enterprise features |
-| **Open Source** | Community-driven | Closed source |
-| **Performance** | Optimized for large codebases | Performance issues reported |
+Vajra is a powerful AI coding assistant that brings multiple AI providers into your VS Code workflow. Whether you prefer local privacy with Ollama, cutting-edge models from OpenAI and Anthropic, or specialized coding models from Qwen and DeepSeek, Vajra has you covered.
 
-## 📦 Quick Start
+## ✨ Features
 
-### 1. Install the Extension
+### 🤖 Multi-Provider Support
+- **10+ AI Providers**: OpenAI, Anthropic, Qwen, DeepSeek, Mistral, Gemini, Groq, Ollama, OpenRouter, HuggingFace
+- **Smart Model Selection**: Automatically choose the best model for each task
+- **Seamless Switching**: Change providers on the fly without restarting
+
+### 💻 Code Intelligence
+- **Explain Code**: Get clear explanations of complex code
+- **Refactor**: Improve code quality and readability
+- **Debug**: AI-powered debugging assistance
+- **Optimize**: Performance improvements and best practices
+- **Generate Tests**: Automatic unit test generation
+- **Add Comments**: Comprehensive code documentation
+
+### 🏠 Local-First Privacy
+- **Ollama Integration**: Run models locally on your machine
+- **No Data Sharing**: Your code stays on your computer
+- **Offline Capable**: Works without internet when using local models
+
+### 🎨 Developer Experience
+- **Context-Aware**: Understands your code and project
+- **Inline Suggestions**: Right-click context menu integration
+- **Chat Interface**: Interactive AI assistant panel
+- **Model Status**: Real-time model availability and recommendations
+
+## 📦 Installation
+
+### From VS Code Marketplace
+1. Open VS Code
+2. Go to Extensions (Ctrl+Shift+X / Cmd+Shift+X)
+3. Search for "Vajra"
+4. Click Install
+
+### From VSIX
 ```bash
-# Install from VSCode Marketplace
-ext install vajra-ai.vajra
-
-# Or install from VSIX
-code --install-extension vajra-0.1.0.vsix
+code --install-extension vajra-0.3.0.vsix
 ```
 
-### 2. Configure Your Preferred Provider
-
-**For Cloud Models (Recommended):**
-```json
-{
-  "vajra.defaultProvider": "qwen",
-  "vajra.qwenApiKey": "your-api-key-here",
-  "vajra.autoModelSelection": true
-}
-```
-
-**For Local Models (Privacy-First):**
+### From Source
 ```bash
-# Install Ollama
-curl -fsSL https://ollama.ai/install.sh | sh
-
-# Pull a coding model
-ollama pull qwen2.5-coder:7b
+git clone https://github.com/ashishjsharda/Vajra.git
+cd Vajra
+npm install
+npm run compile
 ```
 
-### 3. Start Coding with AI
-- **Chat**: Open sidebar and ask questions
-- **Code Selection**: Right-click code → "Explain with Vajra"  
-- **Quick Actions**: `Ctrl+Shift+P` → "Vajra: Generate Code"
+## 🚀 Quick Start
 
-## 🔧 Supported Providers & Models
+### Option 1: Local with Ollama (Recommended for Privacy)
 
-### **☁️ Cloud Providers**
+1. **Install Ollama**
+   ```bash
+   # macOS/Linux
+   curl -fsSL https://ollama.ai/install.sh | sh
+   
+   # Windows: Download from https://ollama.ai/download
+   ```
 
-#### **OpenAI GPT-5 Series**
-```typescript
-// Best overall performance
-models: [
-  'gpt-5',           // 74.9% SWE-bench, 272K context
-  'gpt-5-codex',     // Specialized coding model
-  'o1-preview',      // Advanced reasoning
-  'gpt-4o'           // Multimodal capabilities
-]
+2. **Install a Coding Model**
+   ```bash
+   ollama pull qwen2.5-coder:7b
+   ```
+
+3. **Start Using Vajra**
+   - Vajra will auto-detect your Ollama models
+   - Select code → Right-click → Choose Vajra action
+
+### Option 2: Cloud Providers
+
+1. **Get an API Key** from your preferred provider:
+   - [OpenAI](https://platform.openai.com/api-keys)
+   - [Anthropic](https://console.anthropic.com/)
+   - [Google AI](https://makersuite.google.com/app/apikey)
+
+2. **Configure Vajra**
+   - Open Command Palette (Ctrl+Shift+P / Cmd+Shift+P)
+   - Run "Vajra: Select AI Provider"
+   - Enter your API key when prompted
+
+## 🎯 Supported Providers
+
+| Provider | Best For | Models | Cost |
+|----------|----------|--------|------|
+| **Ollama** | Privacy, Local | qwen2.5-coder, deepseek-coder, codellama | Free |
+| **Qwen** | Coding Excellence | qwen2.5-coder (32B/14B/7B/1.5B) | $$ |
+| **Anthropic** | Reasoning | Claude 3.5 Sonnet/Haiku | $$$ |
+| **OpenAI** | General Purpose | GPT-4 Turbo, GPT-4o | $$$ |
+| **DeepSeek** | Cost-Effective Coding | deepseek-coder | $ |
+| **Mistral** | Fast Coding | Codestral | $$ |
+| **Gemini** | Multimodal | Gemini 2.0 Flash | $$ |
+| **Groq** | Ultra-Fast Inference | Llama 3.3, Mixtral | $$ |
+| **OpenRouter** | Unified Access | All Models | Varies |
+| **HuggingFace** | Open Source | Various | $ |
+
+## 📖 Usage
+
+### Context Menu Commands
+
+Select any code and right-click to access:
+- **Explain Selected Code**: Get detailed explanations
+- **Refactor Selected Code**: Improve code quality
+- **Debug Code with AI**: Find and fix issues
+- **Optimize Code Performance**: Speed improvements
+- **Add Comments to Code**: Auto-documentation
+- **Generate Unit Tests**: Create test cases
+
+### Chat Interface
+
+1. Open Vajra Chat:
+   - Click Vajra icon in sidebar
+   - Or use Command Palette: "Vajra: Open Chat"
+
+2. Ask questions:
+   ```
+   How do I implement a binary search tree in Python?
+   ```
+
+3. Get help with selected code:
+   - Select code in editor
+   - Type question in chat
+   - Vajra automatically includes context
+
+### Model Management
+
+**Check Model Status**
+```
+Command Palette → Vajra: Show Model Status & Recommendations
 ```
 
-#### **Anthropic Claude 4**
-```typescript
-// Best for reasoning and large context
-models: [
-  'claude-4-sonnet',    // 1M token context window
-  'claude-4-opus',      // Premium reasoning model
-  'claude-3.5-sonnet'   // Proven coding performance
-]
+**Check Specific Model**
+```
+Command Palette → Vajra: Check Model Availability
 ```
 
-#### **Qwen3-Coder (Alibaba)**
-```typescript
-// Best for autonomous coding
-models: [
-  'qwen3-coder-480b-instruct',  // 480B parameter flagship
-  'qwen3-coder-32b-instruct',   // Best performance/cost
-  'qwen2.5-coder-14b-instruct'  // Efficient option
-]
+**Get Setup Recommendations**
 ```
-
-#### **DeepSeek-Coder V2.5**
-```typescript
-// Best value proposition
-models: [
-  'deepseek-coder-v2.5',        // Latest unified model
-  'deepseek-coder-v2-instruct'  // 338 programming languages
-]
-```
-
-#### **Mistral Codestral**
-```typescript
-// Fastest coding assistant
-models: [
-  'codestral-25.01',  // 2x faster generation
-  'codestral-22b'     // Proven performance
-]
-```
-
-### **🏠 Local Models (Ollama)**
-
-#### **Privacy-First Deployment**
-```bash
-# Top coding models for local deployment
-ollama pull qwen2.5-coder:32b      # Best overall local model
-ollama pull deepseek-coder-v2:16b  # Great performance, MIT license  
-ollama pull starcoder2:15b         # Open source specialist
-ollama pull codellama:34b          # Meta's coding model
+Command Palette → Vajra: Get Setup Recommendations
 ```
 
 ## ⚙️ Configuration
 
-### **Basic Setup**
-```json
-{
-  "vajra.defaultProvider": "qwen",
-  "vajra.defaultModel": "qwen3-coder-32b-instruct",
-  "vajra.autoModelSelection": true,
-  "vajra.temperature": 0.7,
-  "vajra.maxTokens": 4096
-}
-```
+### Settings
 
-### **Enterprise Configuration**
+Access via: File → Preferences → Settings → Vajra
+
 ```json
 {
-  "vajra.enableCostTracking": true,
-  "vajra.enableMultiModalInput": true,
+  // Default provider
+  "vajra.defaultProvider": "ollama",
+  
+  // Default model
+  "vajra.defaultModel": "qwen2.5-coder:7b",
+  
+  // Ollama endpoint
   "vajra.ollamaEndpoint": "http://localhost:11434",
-  "vajra.autoModelSelection": true
+  
+  // Model parameters
+  "vajra.temperature": 0.7,
+  "vajra.maxTokens": 4096,
+  
+  // Features
+  "vajra.autoModelSelection": true,
+  "vajra.enableCostTracking": false,
+  "vajra.enableMultiModalInput": true
 }
 ```
 
-### **API Key Setup**
-Go to `Settings > Extensions > Vajra` and add your API keys:
+### API Keys
 
-- **OpenAI**: [Get API Key](https://platform.openai.com/api-keys)
-- **Anthropic**: [Get API Key](https://console.anthropic.com/)  
-- **Qwen**: [Get API Key](https://dashscope.aliyun.com/)
-- **DeepSeek**: [Get API Key](https://platform.deepseek.com/)
-- **Mistral**: [Get API Key](https://console.mistral.ai/)
-- **Gemini**: [Get API Key](https://makersuite.google.com/app/apikey)
+Store API keys securely in VS Code settings:
 
-## 🎨 Usage Examples
-
-### **Generate Code from Natural Language**
-```typescript
-// Type: "Create a React component for a todo list"
-// Vajra generates:
-
-import React, { useState } from 'react';
-
-interface Todo {
-  id: number;
-  text: string;
-  completed: boolean;
+```json
+{
+  "vajra.openaiApiKey": "sk-...",
+  "vajra.anthropicApiKey": "sk-ant-...",
+  "vajra.qwenApiKey": "sk-...",
+  "vajra.deepseekApiKey": "sk-...",
+  "vajra.mistralApiKey": "...",
+  "vajra.geminiApiKey": "...",
+  "vajra.groqApiKey": "gsk_...",
+  "vajra.openrouterApiKey": "sk-or-...",
+  "vajra.huggingfaceApiKey": "hf_..."
 }
-
-const TodoList: React.FC = () => {
-  const [todos, setTodos] = useState<Todo[]>([]);
-  const [input, setInput] = useState('');
-
-  const addTodo = () => {
-    if (input.trim()) {
-      setTodos([...todos, { 
-        id: Date.now(), 
-        text: input, 
-        completed: false 
-      }]);
-      setInput('');
-    }
-  };
-
-  return (
-    <div className="todo-list">
-      <input 
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-        onKeyPress={(e) => e.key === 'Enter' && addTodo()}
-        placeholder="Add a todo..."
-      />
-      <button onClick={addTodo}>Add</button>
-      <ul>
-        {todos.map(todo => (
-          <li key={todo.id} className={todo.completed ? 'completed' : ''}>
-            {todo.text}
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-};
-
-export default TodoList;
 ```
 
-### **Intelligent Code Refactoring**
-```typescript
-// Before (select this code):
-function processUsers(users) {
-  let result = [];
-  for (let i = 0; i < users.length; i++) {
-    if (users[i].age >= 18) {
-      result.push({
-        name: users[i].name,
-        email: users[i].email,
-        isAdult: true
-      });
-    }
-  }
-  return result;
-}
+## 🎓 Best Practices
 
-// Right-click → "Refactor with Vajra"
-// After:
-const processAdultUsers = (users: User[]): ProcessedUser[] => {
-  return users
-    .filter(user => user.age >= 18)
-    .map(user => ({
-      name: user.name,
-      email: user.email,
-      isAdult: true
-    }));
-};
+### For Privacy-Conscious Users
+- Use Ollama with local models
+- Models run entirely on your machine
+- No data leaves your computer
+
+### For Performance
+- **Small Projects**: Use 7B models (qwen2.5-coder:7b)
+- **Large Codebases**: Use 32B models (qwen2.5-coder:32b)
+- **Quick Queries**: Use Groq for ultra-fast responses
+
+### For Cost Optimization
+- Start with free tier of cloud providers
+- Use DeepSeek for cost-effective coding
+- Switch to Ollama for zero ongoing costs
+
+## 🔧 Troubleshooting
+
+### Ollama Not Detected
+```bash
+# Check if Ollama is running
+ollama list
+
+# Start Ollama
+ollama serve
+
+# Pull a model
+ollama pull qwen2.5-coder:7b
 ```
 
-### **Smart Debugging**
-```typescript
-// Buggy code:
-function calculateTotal(items) {
-  let total = 0;
-  for (item of items) {  // Missing 'const'
-    total += item.price * item.quantity;
-  }
-  return total;
-}
+### API Key Issues
+1. Verify key is correct
+2. Check rate limits on provider dashboard
+3. Ensure billing is set up (for paid providers)
 
-// Select code → "Debug with Vajra"
-// Vajra identifies: "Missing 'const' declaration in for-of loop"
-// Provides fix with explanation
+### Model Not Found
+```bash
+# List available models
+ollama list
+
+# Pull missing model
+ollama pull <model-name>
 ```
-
-## 🏢 Enterprise Features
-
-### **Security & Compliance**
-- **Local Model Deployment** - Keep sensitive code on-premises
-- **Audit Trails** - Complete usage logging and tracking
-- **SOC 2 Ready** - Enterprise security standards
-- **Data Privacy** - No code storage on external servers with local models
-
-### **Team Management**
-- **Usage Analytics** - Track model usage and costs across teams
-- **Model Policies** - Enforce approved models for different projects
-- **Budget Controls** - Set spending limits and alerts
-
-### **DevOps Integration**
-- **CI/CD Pipeline** - Integrate AI code review in automated workflows
-- **Git Integration** - AI-powered commit message generation
-- **Code Quality** - Automated code review and suggestions
-
-## 🚀 Performance Benchmarks
-
-| Model | HumanEval | MBPP | SWE-bench | Context | Speed |
-|-------|-----------|------|-----------|---------|-------|
-| **GPT-5 Codex** | **91.2%** | **89.7%** | **74.9%** | 272K | Fast |
-| **Qwen3-Coder-32B** | 88.4% | 86.1% | 68.2% | 256K | Fast |
-| **Claude 4 Sonnet** | 84.9% | 82.3% | 49.0% | **1M** | Medium |
-| **DeepSeek-V2.5** | 90.2% | 76.2% | 43.4% | 128K | Fast |
-| **Codestral 25.01** | **86.6%** | 81.1% | 42.8% | 256K | **Fastest** |
-
-> *Benchmarks as of September 2025*
-
-## 💰 Pricing Comparison
-
-### **API Costs (per 1M tokens)**
-| Provider | Input | Output | Best For |
-|----------|-------|--------|----------|
-| **DeepSeek** | $0.14 | $0.28 | **Best Value** |
-| **Qwen** | $0.60 | $1.20 | Coding Specialist |
-| **Mistral** | $1.00 | $3.00 | Speed |
-| **Gemini** | $1.25 | $5.00 | Multimodal |
-| **Anthropic** | $3.00 | $15.00 | Large Context |
-| **OpenAI** | $10.00 | $30.00 | Premium Performance |
-
-### **Local Models (FREE)**
-- **DeepSeek-Coder V2** - MIT License, commercial use allowed
-- **StarCoder2** - OpenRAIL License, commercial friendly
-- **CodeLlama** - Llama 2 License, <700M users free
-
-## 🛠️ Advanced Usage
-
-### **Custom Model Configuration**
-```typescript
-// Smart model routing based on task
-const config = {
-  "vajra.modelRouting": {
-    "code": "qwen3-coder-32b-instruct",
-    "reasoning": "o1-preview", 
-    "chat": "claude-4-sonnet",
-    "vision": "gpt-5"
-  }
-};
-```
-
-### **Multimodal Capabilities**
-```typescript
-// Upload screenshot for UI-to-code conversion
-// Drag & drop images into chat
-// Voice commands: "Explain this function"
-```
-
-### **Batch Processing**
-```typescript
-// Process multiple files
-// Bulk refactoring across codebase
-// Generate tests for entire project
-```
-
-## 🔌 Extensions & Integrations
-
-### **Popular Integrations**
-- **GitHub Copilot** - Use alongside for different strengths
-- **ESLint/Prettier** - Auto-fix with AI suggestions
-- **Jest/Vitest** - AI-generated test cases
-- **Docker** - AI-powered Dockerfile optimization
-
-### **Language Support**
-**Full Support**: TypeScript, JavaScript, Python, Java, C++, C#, Go, Rust, PHP, Ruby, Swift, Kotlin, Scala, R, SQL, HTML, CSS, Bash, PowerShell
-
-**Specialized**: React, Vue, Angular, Node.js, Django, Flask, Spring Boot, .NET, AWS CDK, Terraform
-
-## 📈 Roadmap
-
-### **Q1 2025**
-- [ ] Voice-to-code functionality
-- [ ] Real-time collaboration features
-- [ ] Advanced debugging with stack trace analysis
-- [ ] Custom model fine-tuning support
-
-### **Q2 2025**
-- [ ] IDE integrations (IntelliJ, Sublime, Vim)
-- [ ] Advanced code visualization
-- [ ] Automated code migration tools
-- [ ] Team analytics dashboard
-
-### **Q3 2025**
-- [ ] On-premises enterprise deployment
-- [ ] Advanced compliance features
-- [ ] Custom model training pipeline
-- [ ] Multi-repo code understanding
 
 ## 🤝 Contributing
 
-We welcome contributions! See our [Contributing Guide](CONTRIBUTING.md) for details.
+Contributions are welcome! Here's how:
 
-### **Development Setup**
-```bash
-# Clone repository
-git clone https://github.com/vajra-ai/vscode-extension.git
-cd vscode-extension
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-# Install dependencies
-npm install
+## 📝 Changelog
 
-# Start development
-npm run watch
+### Version 0.3.0 (Current)
+- ✅ Fixed GPT-5 references (not publicly available)
+- ✅ Updated all model names to current versions
+- ✅ Improved Ollama integration and error handling
+- ✅ Better provider auto-configuration
+- ✅ Enhanced model status reporting
+- ✅ Updated API endpoints
 
-# Test extension
-F5 (opens new VSCode window with extension loaded)
-```
+### Version 0.2.0
+- Added multi-provider support
+- Implemented smart model selection
+- Added local Ollama integration
+- Context-aware code actions
+
+### Version 0.1.0
+- Initial release
+- Basic chat functionality
+- Code explanation features
 
 ## 📄 License
 
-MIT License - see [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🆘 Support
+## 🙏 Acknowledgments
 
-- **Documentation**: [docs.vajra-ai.com](https://docs.vajra-ai.com)
-- **Discord**: [discord.gg/vajra-ai](https://discord.gg/vajra-ai)
-- **Issues**: [GitHub Issues](https://github.com/vajra-ai/vscode-extension/issues)
-- **Email**: support@vajra-ai.com
+- Anthropic for Claude
+- OpenAI for GPT models
+- Alibaba for Qwen
+- DeepSeek for coding models
+- Ollama team for local AI
+- All open source contributors
+
+## 📞 Support
+
+- 🐛 [Report Issues](https://github.com/ashishjsharda/Vajra/issues)
+- 💬 [Discussions](https://github.com/ashishjsharda/Vajra/discussions)
+- 📧 Email: ashish@example.com
+
+## 🌟 Show Your Support
+
+If you find Vajra helpful, please:
+- ⭐ Star the repository
+- 🐦 Share on social media
+- 📝 Write a review on VS Code Marketplace
 
 ---
 
-**⭐ Star this repository if Vajra helps your coding workflow!**
+<div align="center">
 
-*Built with ❤️ by the Vajra AI team*
+**Made with ❤️ by [Ashish Sharda](https://github.com/ashishjsharda)**
+
+</div>

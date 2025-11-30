@@ -6,7 +6,7 @@ export class GroqProvider implements AIProvider {
   name = 'groq';
   displayName = 'Groq';
   models = [
-    'llama-3.1-405b-reasoning',
+    'llama-3.3-70b-versatile',
     'llama-3.1-70b-versatile',
     'llama-3.1-8b-instant',
     'mixtral-8x7b-32768',
@@ -48,11 +48,11 @@ export class GroqProvider implements AIProvider {
 
 export class OpenAIProvider implements AIProvider {
   name = 'openai';
-  displayName = 'OpenAI GPT-5';
+  displayName = 'OpenAI GPT-4';
   models = [
-    'gpt-5',
-    'gpt-5-codex',
-    'gpt-5-nano',
+    'gpt-4-turbo-preview',
+    'gpt-4-turbo',
+    'gpt-4',
     'gpt-4o',
     'gpt-4o-mini',
     'o1-preview',
@@ -64,7 +64,7 @@ export class OpenAIProvider implements AIProvider {
     return !!config.get('openaiApiKey');
   }
 
-  async sendMessage(message: string, model: string = 'gpt-5'): Promise<string> {
+  async sendMessage(message: string, model: string = 'gpt-4-turbo'): Promise<string> {
     const config = vscode.workspace.getConfiguration('vajra');
     const apiKey = config.get<string>('openaiApiKey');
 
@@ -94,14 +94,13 @@ export class OpenAIProvider implements AIProvider {
 
 export class AnthropicProvider implements AIProvider {
   name = 'anthropic';
-  displayName = 'Claude 4';
+  displayName = 'Claude 3.5';
   models = [
-    'claude-4-sonnet',
-    'claude-4-opus',
-    'claude-3.5-sonnet',
-    'claude-3.5-haiku',
-    'claude-3-opus',
-    'claude-3-sonnet'
+    'claude-3-5-sonnet-20241022',
+    'claude-3-5-haiku-20241022',
+    'claude-3-opus-20240229',
+    'claude-3-sonnet-20240229',
+    'claude-3-haiku-20240307'
   ];
 
   isConfigured(): boolean {
@@ -109,7 +108,7 @@ export class AnthropicProvider implements AIProvider {
     return !!config.get('anthropicApiKey');
   }
 
-  async sendMessage(message: string, model: string = 'claude-4-sonnet'): Promise<string> {
+  async sendMessage(message: string, model: string = 'claude-3-5-sonnet-20241022'): Promise<string> {
     const config = vscode.workspace.getConfiguration('vajra');
     const apiKey = config.get<string>('anthropicApiKey');
 
@@ -139,14 +138,15 @@ export class AnthropicProvider implements AIProvider {
 
 export class QwenProvider implements AIProvider {
   name = 'qwen';
-  displayName = 'Qwen3-Coder (2025)';
+  displayName = 'Qwen2.5-Coder';
   models = [
-    'qwen3-coder-480b-instruct',     // Latest flagship 2025
-    'qwen3-coder-32b-instruct',      // Best performance/cost
-    'qwen2.5-coder-32b-instruct',    // Proven high performance
-    'qwen2.5-coder-14b-instruct',    // Balanced option
-    'qwen2.5-coder-7b-instruct',     // Most efficient
-    'qwen2.5-coder-1.5b-instruct'    // Lightweight
+    'qwen2.5-coder-32b-instruct',
+    'qwen2.5-coder-14b-instruct',
+    'qwen2.5-coder-7b-instruct',
+    'qwen2.5-coder-1.5b-instruct',
+    'qwen-max',
+    'qwen-plus',
+    'qwen-turbo'
   ];
 
   isConfigured(): boolean {
@@ -188,15 +188,10 @@ export class QwenProvider implements AIProvider {
 
 export class DeepSeekProvider implements AIProvider {
   name = 'deepseek';
-  displayName = 'DeepSeek-R1 (2025)';
+  displayName = 'DeepSeek-Coder V2.5';
   models = [
-    'deepseek-r1',                    // Latest breakthrough reasoning model
-    'deepseek-v3.1',                  // Hybrid V3 + R1 architecture  
-    'deepseek-v3',                    // Latest generation base model
-    'deepseek-coder-v2.5',            // Updated coding specialist
-    'deepseek-coder-v2-instruct',     // Proven coding model
-    'deepseek-coder-v2-lite',         // Efficient variant
-    'deepseek-chat'                   // General conversation
+    'deepseek-coder',
+    'deepseek-chat'
   ];
 
   isConfigured(): boolean {
@@ -204,7 +199,7 @@ export class DeepSeekProvider implements AIProvider {
     return !!config.get('deepseekApiKey');
   }
 
-  async sendMessage(message: string, model: string = 'deepseek-coder-v2.5'): Promise<string> {
+  async sendMessage(message: string, model: string = 'deepseek-coder'): Promise<string> {
     const config = vscode.workspace.getConfiguration('vajra');
     const apiKey = config.get<string>('deepseekApiKey');
 
@@ -236,11 +231,11 @@ export class MistralProvider implements AIProvider {
   name = 'mistral';
   displayName = 'Mistral Codestral';
   models = [
-    'codestral-25.01',
-    'codestral-22b',
-    'mistral-large-2',
-    'mistral-medium',
-    'pixtral-12b'
+    'codestral-latest',
+    'mistral-large-latest',
+    'mistral-medium-latest',
+    'mistral-small-latest',
+    'open-mistral-7b'
   ];
 
   isConfigured(): boolean {
@@ -248,7 +243,7 @@ export class MistralProvider implements AIProvider {
     return !!config.get('mistralApiKey');
   }
 
-  async sendMessage(message: string, model: string = 'codestral-25.01'): Promise<string> {
+  async sendMessage(message: string, model: string = 'codestral-latest'): Promise<string> {
     const config = vscode.workspace.getConfiguration('vajra');
     const apiKey = config.get<string>('mistralApiKey');
 
@@ -278,13 +273,11 @@ export class MistralProvider implements AIProvider {
 
 export class GeminiProvider implements AIProvider {
   name = 'gemini';
-  displayName = 'Google Gemini 2.5';
+  displayName = 'Google Gemini 2.0';
   models = [
-    'gemini-2.5-pro',
     'gemini-2.0-flash-exp',
-    'gemini-1.5-pro',
-    'gemini-1.5-flash',
-    'gemini-code-assist'
+    'gemini-1.5-pro-latest',
+    'gemini-1.5-flash-latest'
   ];
 
   isConfigured(): boolean {
@@ -292,7 +285,7 @@ export class GeminiProvider implements AIProvider {
     return !!config.get('geminiApiKey');
   }
 
-  async sendMessage(message: string, model: string = 'gemini-2.5-pro'): Promise<string> {
+  async sendMessage(message: string, model: string = 'gemini-2.0-flash-exp'): Promise<string> {
     const config = vscode.workspace.getConfiguration('vajra');
     const apiKey = config.get<string>('geminiApiKey');
 
@@ -324,48 +317,43 @@ export class GeminiProvider implements AIProvider {
 
 export class OllamaProvider implements AIProvider {
   name = 'ollama';
-  displayName = 'Ollama (Local 2025)';
+  displayName = 'Ollama (Local)';
   models = [
-    // Latest 2025 Coding Models (88.4% MBPP performance)
-    'qwen2.5-coder:32b',             // Best overall coding model
-    'qwen2.5-coder:14b',             // Balanced performance
-    'qwen2.5-coder:7b',              // 88.4% MBPP, most efficient
-    'qwen2.5-coder:1.5b',            // Lightweight option
+    // Qwen Coding Models (Best for 2025)
+    'qwen2.5-coder:32b',
+    'qwen2.5-coder:14b',
+    'qwen2.5-coder:7b',
+    'qwen2.5-coder:1.5b',
     
-    // DeepSeek Models (2025 updates)
-    'deepseek-r1:14b',               // Latest reasoning model (if available)
-    'deepseek-coder-v2:16b',         // 338 languages, mixture-of-experts
-    'deepseek-coder-v2:6.7b',        // Efficient MoE variant
+    // DeepSeek Models
+    'deepseek-coder-v2:16b',
+    'deepseek-coder:6.7b',
     
-    // Latest General Models with Strong Coding
-    'llama3.3:70b',                  // 405B-level performance 
-    'llama3.2:90b',                  // Latest Meta release
-    'llama3.2:3b',                   // Efficient general model
-    'qwen2.5:72b',                   // Latest Qwen general
-    'qwen2.5:32b',                   // Balanced general model
-    'qwen2.5:14b',                   // Good general performance
-    'qwen2.5:7b',                    // Efficient general
+    // Latest General Models
+    'llama3.3:70b',
+    'llama3.2:3b',
+    'qwen2.5:72b',
+    'qwen2.5:32b',
+    'qwen2.5:14b',
+    'qwen2.5:7b',
     
-    // Specialized Coding Models
-    'starcoder2:15b',                // 600+ languages, latest
-    'starcoder2:7b',                 // Efficient specialist
-    'starcoder2:3b',                 // Lightweight specialist
-    'codellama:70b',                 // Large Meta coding model
-    'codellama:34b',                 // Proven Meta model
-    'codellama:13b',                 // Balanced Meta model
-    'codellama:7b',                  // Efficient Meta model
+    // Specialized Coding
+    'starcoder2:15b',
+    'starcoder2:7b',
+    'starcoder2:3b',
+    'codellama:34b',
+    'codellama:13b',
+    'codellama:7b',
     
     // Additional Options
-    'granite-code:34b',              // IBM enterprise model
-    'granite-code:20b',              // Mid-size enterprise
-    'granite-code:8b',               // Efficient enterprise
-    'codestral:22b',                 // Mistral's coding specialist
-    'phi3:14b',                      // Microsoft's efficient model
-    'mistral:7b'                     // General purpose fallback
+    'granite-code:34b',
+    'granite-code:20b',
+    'granite-code:8b',
+    'phi3:14b',
+    'mistral:7b'
   ];
 
   isConfigured(): boolean {
-    // Ollama doesn't need API key, just check if endpoint is accessible
     return true;
   }
 
@@ -387,6 +375,9 @@ export class OllamaProvider implements AIProvider {
 
       return response.data.response;
     } catch (error: any) {
+      if (error.code === 'ECONNREFUSED') {
+        throw new Error('Ollama server not running. Please start Ollama first.');
+      }
       throw new Error(`Ollama error: ${error.response?.data?.error || error.message}`);
     }
   }
@@ -394,23 +385,15 @@ export class OllamaProvider implements AIProvider {
 
 export class OpenRouterProvider implements AIProvider {
   name = 'openrouter';
-  displayName = 'OpenRouter (2025)';
+  displayName = 'OpenRouter';
   models = [
-    // Latest 2025 Models
-    'deepseek/deepseek-r1',
-    'alibaba/qwen-3-coder-32b-instruct',
-    'deepseek/deepseek-v3',
-    'anthropic/claude-4-sonnet',
-    'openai/gpt-5',
-    'google/gemini-2.5-pro',
-    
-    // Proven Coding Models
-    'deepseek/deepseek-coder-v2.5',
-    'alibaba/qwen-2.5-coder-32b-instruct',
-    'mistral/codestral-25.01',
+    'anthropic/claude-3.5-sonnet',
+    'openai/gpt-4-turbo',
+    'google/gemini-2.0-flash-exp',
+    'qwen/qwen-2.5-coder-32b-instruct',
+    'deepseek/deepseek-coder',
     'meta-llama/llama-3.3-70b-instruct',
-    'bigcode/starcoder2-15b',
-    'microsoft/wizardcoder-34b'
+    'mistralai/codestral-latest'
   ];
 
   isConfigured(): boolean {
@@ -418,7 +401,7 @@ export class OpenRouterProvider implements AIProvider {
     return !!config.get('openrouterApiKey');
   }
 
-  async sendMessage(message: string, model: string = 'alibaba/qwen-2.5-coder-32b-instruct'): Promise<string> {
+  async sendMessage(message: string, model: string = 'qwen/qwen-2.5-coder-32b-instruct'): Promise<string> {
     const config = vscode.workspace.getConfiguration('vajra');
     const apiKey = config.get<string>('openrouterApiKey');
 
@@ -436,7 +419,7 @@ export class OpenRouterProvider implements AIProvider {
         headers: {
           'Authorization': `Bearer ${apiKey}`,
           'Content-Type': 'application/json',
-          'HTTP-Referer': 'https://vajra-ai.com',
+          'HTTP-Referer': 'https://github.com/ashishjsharda/Vajra',
           'X-Title': 'Vajra AI Coding Assistant'
         }
       });
@@ -450,22 +433,13 @@ export class OpenRouterProvider implements AIProvider {
 
 export class HuggingFaceProvider implements AIProvider {
   name = 'huggingface';
-  displayName = 'HuggingFace (2025)';
+  displayName = 'HuggingFace';
   models = [
-    // Latest 2025 Models
-    'deepseek-ai/DeepSeek-R1',
     'Qwen/Qwen2.5-Coder-32B-Instruct',
-    'deepseek-ai/DeepSeek-Coder-V2.5',
-    'bigcode/starcoder2-15b',
-    'microsoft/CodeT5p-16b',
-    
-    // Proven Models
     'deepseek-ai/DeepSeek-Coder-V2-Instruct',
     'codellama/CodeLlama-34b-Instruct-hf',
-    'WizardCoder/WizardCoder-Python-34B-V1.0',
-    'bigcode/starcoder2-7b',
-    'microsoft/DialoGPT-medium',
-    'microsoft/CodeBERT-base'
+    'bigcode/starcoder2-15b',
+    'microsoft/phi-2'
   ];
 
   isConfigured(): boolean {
@@ -507,7 +481,6 @@ export class ProviderManager {
   private providers: Map<string, AIProvider> = new Map();
 
   constructor() {
-    // Add all providers with latest 2025 models
     this.providers.set('openai', new OpenAIProvider());
     this.providers.set('anthropic', new AnthropicProvider());
     this.providers.set('qwen', new QwenProvider());
@@ -532,40 +505,38 @@ export class ProviderManager {
     return Array.from(this.providers.values());
   }
 
-  // Updated for 2025 models
   getBestModelForTask(task: 'code' | 'chat' | 'reasoning' | 'local'): { provider: string; model: string } {
     switch (task) {
       case 'code':
-        return { provider: 'qwen', model: 'qwen2.5-coder-7b-instruct' }; // 88.4% MBPP
+        return { provider: 'qwen', model: 'qwen2.5-coder-7b-instruct' };
       case 'reasoning':
-        return { provider: 'deepseek', model: 'deepseek-r1' }; // Latest reasoning breakthrough
+        return { provider: 'anthropic', model: 'claude-3-5-sonnet-20241022' };
       case 'local':
-        return { provider: 'ollama', model: 'qwen2.5-coder:7b' }; // Best local coding model
+        return { provider: 'ollama', model: 'qwen2.5-coder:7b' };
       case 'chat':
       default:
-        return { provider: 'anthropic', model: 'claude-4-sonnet' };
+        return { provider: 'anthropic', model: 'claude-3-5-sonnet-20241022' };
     }
   }
 
-  // Get recommended models for different hardware
   getModelForHardware(ramGB: number, hasGPU: boolean): { provider: string; model: string; notes: string } {
     if (ramGB >= 32 && hasGPU) {
       return { 
         provider: 'ollama', 
         model: 'qwen2.5-coder:32b',
-        notes: 'High-end: Best coding performance, 88.4% MBPP+'
+        notes: 'High-end: Best coding performance'
       };
     } else if (ramGB >= 16 && hasGPU) {
       return { 
         provider: 'ollama', 
         model: 'qwen2.5-coder:14b',
-        notes: 'Mid-range: Excellent coding, good performance'
+        notes: 'Mid-range: Excellent coding performance'
       };
     } else if (ramGB >= 8) {
       return { 
         provider: 'ollama', 
         model: 'qwen2.5-coder:7b',
-        notes: 'Standard: 88.4% MBPP, very efficient'
+        notes: 'Standard: Efficient and capable'
       };
     } else {
       return { 

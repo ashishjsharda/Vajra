@@ -1,8 +1,8 @@
 {
   "name": "vajra",
   "displayName": "Vajra - AI Coding Assistant",
-  "description": "Enterprise-grade multi-provider AI coding assistant supporting GPT-5, Claude 4, Qwen3-Coder, and more",
-  "version": "0.2.0",
+  "description": "Enterprise-grade multi-provider AI coding assistant supporting Claude, GPT-4, Qwen, DeepSeek, and more",
+  "version": "0.3.1",
   "publisher": "ashishjsharda",
   "engines": {
     "vscode": "^1.74.0"
@@ -12,12 +12,13 @@
     "ai",
     "coding",
     "assistant",
-    "gpt-5",
-    "claude-4",
+    "claude",
+    "gpt-4",
     "qwen",
     "deepseek",
     "multimodal",
-    "cursor-alternative"
+    "cursor-alternative",
+    "ollama"
   ],
   "activationEvents": [
     "onStartupFinished"
@@ -84,6 +85,11 @@
         "command": "vajra.getSetupRecommendations",
         "title": "Get Setup Recommendations",
         "icon": "$(lightbulb)"
+      },
+      {
+        "command": "vajra.selectModel",
+        "title": "Select AI Model",
+        "icon": "$(symbol-parameter)"
       }
     ],
     "menus": {
@@ -136,22 +142,22 @@
       "properties": {
         "vajra.openaiApiKey": {
           "type": "string",
-          "description": "OpenAI API Key for GPT-5 models",
+          "description": "OpenAI API Key for GPT-4 models",
           "markdownDescription": "Your OpenAI API key. Get one from [OpenAI Platform](https://platform.openai.com/api-keys)"
         },
         "vajra.anthropicApiKey": {
           "type": "string",
-          "description": "Anthropic API Key for Claude 4 models",
+          "description": "Anthropic API Key for Claude models",
           "markdownDescription": "Your Anthropic API key. Get one from [Anthropic Console](https://console.anthropic.com/)"
         },
         "vajra.qwenApiKey": {
           "type": "string",
-          "description": "Qwen API Key for Qwen3-Coder models",
+          "description": "Qwen API Key for Qwen models",
           "markdownDescription": "Your Qwen API key. Get one from [Alibaba Cloud DashScope](https://dashscope.aliyun.com/)"
         },
         "vajra.deepseekApiKey": {
           "type": "string",
-          "description": "DeepSeek API Key for DeepSeek-Coder models",
+          "description": "DeepSeek API Key for DeepSeek models",
           "markdownDescription": "Your DeepSeek API key. Get one from [DeepSeek Platform](https://platform.deepseek.com/)"
         },
         "vajra.mistralApiKey": {
@@ -198,15 +204,15 @@
             "openrouter",
             "huggingface"
           ],
-          "default": "qwen",
+          "default": "ollama",
           "description": "Default AI provider",
           "enumDescriptions": [
-            "OpenAI GPT-5 (Best overall, premium pricing)",
-            "Anthropic Claude 4 (Best reasoning, large context)",
-            "Qwen3-Coder (Best for coding, autonomous agents)",
+            "OpenAI GPT-4 (Best overall, premium pricing)",
+            "Anthropic Claude 3.5 (Best reasoning, large context)",
+            "Qwen2.5-Coder (Best for coding, state-of-art)",
             "DeepSeek-Coder V2.5 (Great coding, best value)",
             "Mistral Codestral (Fast coding, good performance)",
-            "Google Gemini 2.5 (Multimodal, code execution)",
+            "Google Gemini 2.0 (Multimodal, code execution)",
             "Groq (Ultra-fast inference)",
             "Ollama (Local models, privacy)",
             "OpenRouter (Access to all models)",
@@ -215,7 +221,7 @@
         },
         "vajra.defaultModel": {
           "type": "string",
-          "default": "qwen3-coder-32b-instruct",
+          "default": "qwen2.5-coder:7b",
           "description": "Default model to use"
         },
         "vajra.autoModelSelection": {
@@ -254,7 +260,9 @@
     "watch": "tsc -watch -p ./",
     "pretest": "npm run compile && npm run lint",
     "lint": "eslint src --ext ts",
-    "test": "node ./out/test/runTest.js"
+    "test": "node ./out/test/runTest.js",
+    "package": "vsce package",
+    "publish": "vsce publish"
   },
   "devDependencies": {
     "@types/vscode": "^1.74.0",
@@ -279,5 +287,6 @@
     "url": "https://github.com/ashishjsharda/Vajra/issues"
   },
   "homepage": "https://github.com/ashishjsharda/Vajra#readme",
-  "license": "MIT"
+  "license": "MIT",
+  "icon": "icon.png"
 }
