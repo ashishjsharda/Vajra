@@ -2,7 +2,7 @@
   "name": "vajra",
   "displayName": "Vajra - AI Coding Assistant",
   "description": "Enterprise-grade multi-provider AI coding assistant supporting Claude, GPT-4, Qwen, DeepSeek, and more",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "publisher": "ashishjsharda",
   "engines": {
     "vscode": "^1.74.0"
@@ -25,6 +25,14 @@
   ],
   "main": "./out/extension.js",
   "contributes": {
+    "keybindings": [
+      {
+        "command": "vajra.inlineEdit",
+        "key": "ctrl+k",
+        "mac": "cmd+k",
+        "when": "editorTextFocus"
+      }
+    ],
     "commands": [
       {
         "command": "vajra.openChat",

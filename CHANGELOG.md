@@ -5,7 +5,24 @@ All notable changes to the Vajra AI Coding Assistant extension will be documente
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.3.0] - 2024-11-30
+## [0.3.2] - 2025-12-24
+
+### ✨ New "Sexy" UI & UX
+- **Glassmorphic Design**: Complete UI overhaul with a modern, transparent "glass" look and feel.
+- **Pill-Shaped Input**: Replaced the standard box with a floating, modern input bar.
+- **Smooth Animations**: Messages now fade in smoothly for a premium chat experience.
+- **Markdown & Highlighting**: Added full Markdown support (bold, italics, lists) and syntax highlighting for code blocks.
+
+### ⚡ New Features
+- **"Apply to Editor" Button**: Instantly insert generated code into your active file with a single click.
+- **Inline Edit (Cmd+K)**: Select code and press `Cmd+K` (or `Ctrl+K`) to refactor or edit code in-place without leaving the editor.
+- **Smart Context**: Better handling of selected code context in chat.
+
+### 🛠️ Improvements
+- Reduced package size by optimizing included files.
+- Improved error handling for local Ollama models.
+
+## [0.3.0] - 2025-11-30
 
 ### Fixed
 - **CRITICAL**: Removed references to GPT-5 (not publicly available)
@@ -41,7 +58,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Keywords updated to remove GPT-5 references
 - Default provider changed to Ollama for privacy-first approach
 
-## [0.2.0] - 2024-09-XX
+## [0.2.0] - 2025-09-XX
 
 ### Added
 - Multi-provider support (10+ AI providers)
@@ -74,7 +91,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - OpenRouter (Unified access)
 - HuggingFace (Open source)
 
-## [0.1.0] - 2024-09-01
+## [0.1.0] - 2025-09-01
 
 ### Added
 - Initial release

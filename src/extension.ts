@@ -30,7 +30,85 @@ export function activate(context: vscode.ExtensionContext) {
     })
   );
 
-  // IMPROVED: Better provider selection with instant setup
+  // NEW: Inline Edit Command (Cursor-like Cmd+K)
+  context.subscriptions.push(
+    vscode.commands.registerCommand('vajra.inlineEdit', async () => {
+      const editor = vscode.window.activeTextEditor;
+      if (!editor) {
+          vscode.window.showErrorMessage('Please open a file to use Inline Edit');
+          return;
+      }
+
+      // 1. Get the instruction
+      const instruction = await vscode.window.showInputBox({
+        placeHolder: "Describe your change (e.g., 'Make this function async', 'Add error handling')",
+        prompt: "Vajra Inline Edit ⚡",
+        title: "Inline AI Edit"
+      });
+
+      if (!instruction) return;
+
+      // 2. Get selection or full file
+      const selection = editor.selection;
+      const textToEdit = selection.isEmpty ? editor.document.getText() : editor.document.getText(selection);
+
+      // 3. Show loading status
+      await vscode.window.withProgress({
+        location: vscode.ProgressLocation.Notification,
+        title: "Vajra is rewriting...",
+        cancellable: false
+      }, async () => {
+          try {
+            // 4. Send to your AI Provider
+            const config = ConfigManager.getConfig();
+            const provider = providerManager.getProvider(config.defaultProvider);
+            
+            if (!provider) throw new Error("Provider not configured");
+
+            const prompt = `Refactor the following code based on this instruction: "${instruction}". 
+            
+            IMPORTANT RULES:
+            1. ONLY output the valid code. 
+            2. Do NOT wrap in markdown blocks (no \`\`\`). 
+            3. Do NOT provide explanations.
+            
+            Code to refactor:
+            ${textToEdit}`;
+
+            // Use configured model or a smart default
+            let model = config.defaultModel;
+            if (config.defaultProvider === 'ollama') {
+               // Assuming Ollama, try to grab a known good coding model if the default isn't set
+               const models = await ConfigManager.getAvailableOllamaModels();
+               if (!models.includes(model)) model = models[0]; 
+            }
+
+            const newCode = await provider.sendMessage(prompt, model);
+
+            // 5. Apply the edit
+            if (newCode) {
+                // Strip markdown block symbols if the AI added them despite instructions
+                const cleanCode = newCode.replace(/```[\w]*\n/g, '').replace(/```/g, '').trim();
+                
+                await editor.edit(editBuilder => {
+                    if (selection.isEmpty) {
+                         // If no selection, replace whole file
+                         const lastLine = editor.document.lineAt(editor.document.lineCount - 1);
+                         const range = new vscode.Range(0, 0, lastLine.lineNumber, lastLine.text.length);
+                         editBuilder.replace(range, cleanCode);
+                    } else {
+                        editBuilder.replace(selection, cleanCode);
+                    }
+                });
+            }
+          } catch (e: any) {
+              vscode.window.showErrorMessage(`Inline Edit Failed: ${e.message}`);
+          }
+      });
+    })
+  );
+
+  // Better provider selection with instant setup
   context.subscriptions.push(
     vscode.commands.registerCommand('vajra.selectProvider', async () => {
       const providers = providerManager.getAllProviders();
@@ -159,7 +237,7 @@ export function activate(context: vscode.ExtensionContext) {
     })
   );
 
-  // NEW: Quick command to change model without changing provider
+  // Quick command to change model without changing provider
   context.subscriptions.push(
     vscode.commands.registerCommand('vajra.selectModel', async () => {
       const config = ConfigManager.getConfig();
@@ -379,9 +457,6 @@ async function setupCloudProvider(providerName: string): Promise<boolean> {
   return true;
 }
 
-/**
- * Select model for a specific provider
- */
 /**
  * Select model for a specific provider
  */
